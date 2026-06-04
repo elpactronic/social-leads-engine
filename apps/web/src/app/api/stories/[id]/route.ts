@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { findStoryById, deleteStory } from "@warm-stories/core";
+import { findPostById, deletePost } from "@social-leads/core";
 
 export async function DELETE(
   _req: Request,
@@ -7,7 +7,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const decoded = decodeURIComponent(id);
-  const story = await findStoryById(decoded);
+  const story = await findPostById(decoded);
   if (!story) {
     return NextResponse.json(
       { ok: false, error: "Story no encontrada" },
@@ -23,6 +23,6 @@ export async function DELETE(
       { status: 400 },
     );
   }
-  await deleteStory(story);
+  await deletePost(story);
   return NextResponse.json({ ok: true });
 }

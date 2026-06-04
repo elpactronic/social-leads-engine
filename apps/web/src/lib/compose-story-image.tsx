@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import type { Story, AvatarConfig } from "@warm-stories/core";
+import type { Post, RubroConfig } from "@social-leads/core";
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
@@ -25,8 +25,8 @@ function isStickerCta(cta: string): boolean {
 }
 
 export async function composeStoryImage(
-  story: Story,
-  palette: AvatarConfig["brand"]["palette"],
+  story: Post,
+  palette: RubroConfig["brand"]["palette"],
 ): Promise<Uint8Array> {
   // No incluimos meta (#slot · función, venta). El CTA sí va en la imagen,
   // salvo cuando es un poll/pregunta/sticker que se monta nativo en IG.

@@ -2,12 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import StoryPreview from "@/components/StoryPreview";
-import type { Story, AvatarConfig } from "@warm-stories/core";
+import PostPreview from "@/components/PostPreview";
+import type { Post, RubroConfig } from "@social-leads/core";
 
 interface Props {
-  story: Story;
-  palette: AvatarConfig["brand"]["palette"];
+  story: Post;
+  palette: RubroConfig["brand"]["palette"];
 }
 
 export default function StoryGridItem({ story, palette }: Props) {
@@ -144,7 +144,7 @@ export default function StoryGridItem({ story, palette }: Props) {
         }}
         style={{ cursor: "pointer" }}
       >
-        <StoryPreview story={story} palette={palette} size="sm" />
+        <PostPreview post={story} palette={palette} size="sm" />
         <div className="preview-grid-meta">
           <span>
             #{String(story.slot).padStart(2, "0")} · {story.function}

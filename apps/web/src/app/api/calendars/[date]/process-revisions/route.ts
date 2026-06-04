@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { spawn } from "node:child_process";
-import { listStories } from "@warm-stories/core";
+import { listPosts } from "@social-leads/core";
 
 const TIMEOUT_MS = 5 * 60 * 1000;
 
@@ -11,7 +11,7 @@ export async function POST(
   { params }: { params: Promise<{ date: string }> },
 ) {
   const { date } = await params;
-  const stories = await listStories(date);
+  const stories = await listPosts(date);
   const pending = stories.filter((s) => s.status === "needs-revision");
   if (pending.length === 0) {
     return NextResponse.json(

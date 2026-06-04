@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import {
-  findStoryById,
-  updateStory,
+  findPostById,
+  updatePost,
   createTask,
   pollUntilDone,
   buildImagePrompt,
-  loadAvatar,
-} from "@warm-stories/core";
+  loadRubro,
+} from "@social-leads/core";
 
 export const maxDuration = 360;
 
@@ -16,7 +16,7 @@ export async function POST(
 ) {
   const { id } = await params;
   const decoded = decodeURIComponent(id);
-  const story = await findStoryById(decoded);
+  const story = await findPostById(decoded);
   if (!story) {
     return NextResponse.json(
       { ok: false, error: "Story no encontrada" },
@@ -33,7 +33,7 @@ export async function POST(
   const model =
     story.image_model || process.env.KIE_AI_DEFAULT_MODEL || "z-image";
 
-  await updateStory({
+  await updatePost({
     ...story,
     status: "generating-image",
     image_model: model,
@@ -42,8 +42,8 @@ export async function POST(
   });
 
   try {
-    const avatar = await loadAvatar();
-    const prompt = buildImagePrompt(avatar, story.imagePrompt);
+    const rubro = await loadRubro();
+    const prompt = buildImagePrompt(rubro, story.imagePrompt);
     const { taskId } = await createTask({
       model,
       prompt,
@@ -52,7 +52,7 @@ export async function POST(
 
     if (info.status !== "succeeded" || !info.imageUrl) {
       const errMsg = info.error ?? "kie.ai devolvió status sin imageUrl.";
-      await updateStory({
+      await updatePost({
         ...story,
         status: "failed",
         image_model: model,
@@ -62,7 +62,7 @@ export async function POST(
       return NextResponse.json({ ok: false, error: errMsg }, { status: 502 });
     }
 
-    await updateStory({
+    await updatePost({
       ...story,
       status: "ready",
       image_model: model,
@@ -72,7 +72,7 @@ export async function POST(
     return NextResponse.json({ ok: true, imageUrl: info.imageUrl });
   } catch (err) {
     const errMsg = err instanceof Error ? err.message : String(err);
-    await updateStory({
+    await updatePost({
       ...story,
       status: "failed",
       image_model: model,

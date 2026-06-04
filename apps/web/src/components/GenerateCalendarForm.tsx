@@ -8,8 +8,18 @@ interface LogEntry {
   message: string;
 }
 
+type Platform = "instagram" | "facebook" | "tiktok" | "all";
+
+const PLATFORMS: { id: Platform; label: string; icon: string }[] = [
+  { id: "all", label: "Todas las plataformas", icon: "🌐" },
+  { id: "instagram", label: "Instagram", icon: "📷" },
+  { id: "facebook", label: "Facebook", icon: "👍" },
+  { id: "tiktok", label: "TikTok", icon: "🎵" },
+];
+
 export default function GenerateCalendarForm() {
   const router = useRouter();
+  const [platform, setPlatform] = useState<Platform>("instagram");
   const [topic, setTopic] = useState("");
   const [date, setDate] = useState("");
   const [count, setCount] = useState("5");
@@ -67,6 +77,7 @@ export default function GenerateCalendarForm() {
           topic: topic.trim(),
           date,
           count: Number(count),
+          platform,
         }),
       });
 
@@ -134,6 +145,22 @@ export default function GenerateCalendarForm() {
   return (
     <form className="card generate-form" onSubmit={submit} noValidate>
       <h2>Generar calendario</h2>
+
+      <div className="platform-tabs" role="group" aria-label="Plataforma">
+        {PLATFORMS.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            className={`platform-tab${platform === p.id ? " platform-tab--active" : ""}`}
+            onClick={() => setPlatform(p.id)}
+            disabled={busy}
+          >
+            <span className="platform-tab-icon">{p.icon}</span>
+            {p.label}
+          </button>
+        ))}
+      </div>
+
       <div className="generate-form-row">
         <label className="generate-form-field" style={{ flex: 2 }}>
           <span>Tema u oferta</span>

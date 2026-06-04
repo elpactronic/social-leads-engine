@@ -74,8 +74,15 @@ export interface Post extends PostFrontmatter, PostBody {
   filePath: string;
 }
 
+export interface PlatformGroup {
+  platform: PostPlatform;
+  count: number;
+  byStatus: Record<PostStatus, number>;
+}
+
 export interface CalendarSummary {
   date: string;
   count: number;
   byStatus: Record<PostStatus, number>;
+  byPlatform: PlatformGroup[];
 }

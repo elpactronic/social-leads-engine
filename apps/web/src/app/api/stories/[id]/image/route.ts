@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import {
-  findStoryById,
-  updateStory,
+  findPostById,
+  updatePost,
   createTask,
   pollUntilDone,
   buildImagePrompt,
-  loadAvatar,
-} from "@warm-stories/core";
+  loadRubro,
+} from "@social-leads/core";
 
 export async function POST(
   _req: Request,
@@ -14,7 +14,7 @@ export async function POST(
 ) {
   const { id } = await params;
   const decoded = decodeURIComponent(id);
-  const story = await findStoryById(decoded);
+  const story = await findPostById(decoded);
   if (!story) {
     return NextResponse.json(
       { ok: false, error: "Story no encontrada" },
@@ -34,11 +34,11 @@ export async function POST(
   const model =
     story.image_model || process.env.KIE_AI_DEFAULT_MODEL || "z-image";
 
-  await updateStory({ ...story, status: "generating-image" });
+  await updatePost({ ...story, status: "generating-image" });
 
   try {
-    const avatar = await loadAvatar();
-    const prompt = buildImagePrompt(avatar, story.imagePrompt);
+    const rubro = await loadRubro();
+    const prompt = buildImagePrompt(rubro, story.imagePrompt);
     const { taskId } = await createTask({
       model,
       prompt,
@@ -46,14 +46,14 @@ export async function POST(
     const info = await pollUntilDone(taskId);
 
     if (info.status !== "succeeded" || !info.imageUrl) {
-      await updateStory({ ...story, status: "failed", image_model: model });
+      await updatePost({ ...story, status: "failed", image_model: model });
       return NextResponse.json(
         { ok: false, error: info.error ?? "kie.ai no retornó imageUrl" },
         { status: 502 },
       );
     }
 
-    await updateStory({
+    await updatePost({
       ...story,
       status: "ready",
       image_model: model,
@@ -61,7 +61,7 @@ export async function POST(
     });
     return NextResponse.json({ ok: true, imageUrl: info.imageUrl });
   } catch (err) {
-    await updateStory({ ...story, status: "failed", image_model: model });
+    await updatePost({ ...story, status: "failed", image_model: model });
     const error = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ ok: false, error }, { status: 500 });
   }

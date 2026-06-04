@@ -1,8 +1,8 @@
-import type { Story, AvatarConfig } from "@warm-stories/core";
+import type { Post, RubroConfig } from "@social-leads/core";
 
 interface Props {
-  story: Story;
-  palette: AvatarConfig["brand"]["palette"];
+  story: Post;
+  palette: RubroConfig["brand"]["palette"];
   size?: "sm" | "md" | "lg";
 }
 

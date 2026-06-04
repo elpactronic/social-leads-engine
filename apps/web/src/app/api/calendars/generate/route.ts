@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { getProjectRoot, listStories } from "@warm-stories/core";
+import { getProjectRoot, listPosts } from "@social-leads/core";
 
 const TIMEOUT_MS = 10 * 60 * 1000;
 
@@ -12,6 +12,7 @@ interface Body {
   topic?: unknown;
   date?: unknown;
   count?: unknown;
+  platform?: unknown;
 }
 
 export async function POST(req: Request) {
@@ -56,12 +57,12 @@ export async function POST(req: Request) {
 
   const projectRoot = getProjectRoot();
 
-  if (!existsSync(path.join(projectRoot, "config/avatar.yaml"))) {
+  if (!existsSync(path.join(projectRoot, "config/rubro.yaml"))) {
     return NextResponse.json(
       {
         ok: false,
         error:
-          "No existe config/avatar.yaml. Corre /configure-avatar desde Claude Code antes de generar el calendario.",
+          "No existe config/rubro.yaml. Corre /configure-rubro desde Claude Code antes de generar el calendario.",
       },
       { status: 400 },
     );
@@ -77,8 +78,19 @@ export async function POST(req: Request) {
     );
   }
 
-  const parts = [topic, `Fecha: ${dateRaw}.`];
-  if (countRaw !== undefined) parts.push(`Cantidad: ${countRaw} historias.`);
+  const validPlatforms = ["instagram", "facebook", "tiktok", "all"];
+  const platform =
+    typeof body.platform === "string" && validPlatforms.includes(body.platform)
+      ? body.platform
+      : "instagram";
+
+  const platformLabel =
+    platform === "all"
+      ? "instagram, facebook y tiktok (distribuir los posts entre las tres plataformas)"
+      : platform;
+
+  const parts = [topic, `Fecha: ${dateRaw}.`, `Plataforma: ${platformLabel}.`];
+  if (countRaw !== undefined) parts.push(`Cantidad: ${countRaw} posts.`);
   const argumentString = parts.join(" ");
 
   const encoder = new TextEncoder();
@@ -158,25 +170,25 @@ export async function POST(req: Request) {
           return;
         }
 
-        let storyCount = 0;
+        let postCount = 0;
         try {
-          const stories = await listStories(dateRaw);
-          storyCount = stories.length;
+          const stories = await listPosts(dateRaw);
+          postCount = stories.length;
         } catch {
           // ignore
         }
 
-        if (storyCount === 0) {
+        if (postCount === 0) {
           send(
             "error",
             code !== 0
-              ? `claude CLI salió con código ${code} y no se generó ninguna historia.`
-              : `claude terminó OK pero no se creó ninguna historia en content/calendars/${dateRaw}/. Revisa los logs (probablemente el skill abortó por falta de datos).`,
+              ? `claude CLI salió con código ${code} y no se generó ningún post.`
+              : `claude terminó OK pero no se creó ningún post en content/calendars/${dateRaw}/. Revisa los logs (probablemente el skill abortó por falta de datos).`,
           );
         } else {
           send(
             "done",
-            `Generadas ${storyCount} historia${storyCount === 1 ? "" : "s"} en content/calendars/${dateRaw}/.`,
+            `Generados ${postCount} post${postCount === 1 ? "" : "s"} en content/calendars/${dateRaw}/.`,
           );
         }
 

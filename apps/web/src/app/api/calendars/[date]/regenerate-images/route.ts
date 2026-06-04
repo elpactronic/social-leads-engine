@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import {
-  listStories,
-  updateStory,
+  listPosts,
+  updatePost,
   createTask,
   pollUntilDone,
   buildImagePrompt,
-  loadAvatar,
-} from "@warm-stories/core";
+  loadRubro,
+} from "@social-leads/core";
 
 export const maxDuration = 600;
 
@@ -15,7 +15,7 @@ export async function POST(
   { params }: { params: Promise<{ date: string }> },
 ) {
   const { date } = await params;
-  const stories = await listStories(date);
+  const stories = await listPosts(date);
   if (stories.length === 0) {
     return NextResponse.json(
       { ok: false, error: "Calendario vacío o inexistente" },
@@ -33,14 +33,14 @@ export async function POST(
   }
 
   const defaultModel = process.env.KIE_AI_DEFAULT_MODEL || "z-image";
-  const avatar = await loadAvatar();
+  const rubro = await loadRubro();
   let generated = 0;
   let failed = 0;
   const errors: { id: string; error: string }[] = [];
 
   for (const story of targets) {
     const model = story.image_model || defaultModel;
-    await updateStory({
+    await updatePost({
       ...story,
       status: "generating-image",
       image_model: model,
@@ -51,13 +51,13 @@ export async function POST(
     try {
       const { taskId } = await createTask({
         model,
-        prompt: buildImagePrompt(avatar, story.imagePrompt),
+        prompt: buildImagePrompt(rubro, story.imagePrompt),
       });
       const info = await pollUntilDone(taskId);
 
       if (info.status !== "succeeded" || !info.imageUrl) {
         const errMsg = info.error ?? "kie.ai devolvió status sin imageUrl.";
-        await updateStory({
+        await updatePost({
           ...story,
           status: "failed",
           image_model: model,
@@ -69,7 +69,7 @@ export async function POST(
         continue;
       }
 
-      await updateStory({
+      await updatePost({
         ...story,
         status: "ready",
         image_model: model,
@@ -79,7 +79,7 @@ export async function POST(
       generated++;
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
-      await updateStory({
+      await updatePost({
         ...story,
         status: "failed",
         image_model: model,

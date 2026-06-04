@@ -8,6 +8,7 @@ export type {
   PostFunction,
   FunnelStage,
   CalendarSummary,
+  PlatformGroup,
 } from "./types/post";
 
 export type {
@@ -77,6 +78,14 @@ export {
   getPublishingLimit,
 } from "./lib/instagram";
 export type { PublishStoryInput, PublishStoryResult } from "./lib/instagram";
+
+export {
+  publishFacebookPost,
+} from "./lib/facebook";
+export type {
+  PublishFacebookPostInput,
+  PublishFacebookPostResult,
+} from "./lib/facebook";
 
 export { renderMarkdown } from "./lib/markdown";
 

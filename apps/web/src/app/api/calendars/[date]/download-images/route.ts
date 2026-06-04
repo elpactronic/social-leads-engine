@@ -1,15 +1,15 @@
 import path from "node:path";
 import { NextResponse } from "next/server";
 import {
-  listStories,
-  loadAvatar,
+  listPosts,
+  loadRubro,
   buildZip,
   type ZipEntry,
-  type Story,
-} from "@warm-stories/core";
-import { composeStoryImage } from "@/lib/compose-story-image";
+  type Post,
+} from "@social-leads/core";
+import { composePostImage } from "@/lib/compose-story-image";
 
-function entryNameFor(story: Story): string {
+function entryNameFor(story: Post): string {
   const base = path.basename(story.filePath, path.extname(story.filePath));
   return `${base}.png`;
 }
@@ -19,7 +19,7 @@ export async function POST(
   { params }: { params: Promise<{ date: string }> },
 ) {
   const { date } = await params;
-  const stories = await listStories(date);
+  const stories = await listPosts(date);
 
   if (stories.length === 0) {
     return NextResponse.json(
@@ -36,15 +36,15 @@ export async function POST(
     );
   }
 
-  const avatar = await loadAvatar();
-  const palette = avatar.brand.palette;
+  const rubro = await loadRubro();
+  const palette = rubro.brand.palette;
 
   const entries: ZipEntry[] = [];
   const skipped: { id: string; reason: string }[] = [];
 
   for (const story of withImage) {
     try {
-      const data = await composeStoryImage(story, palette);
+      const data = await composePostImage(story, palette);
       entries.push({ filename: entryNameFor(story), data });
     } catch (err) {
       skipped.push({

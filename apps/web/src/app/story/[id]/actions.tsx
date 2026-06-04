@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { StoryStatus } from "@warm-stories/core";
+import type { PostStatus } from "@social-leads/core";
 
 interface Props {
   id: string;
-  status: StoryStatus;
+  status: PostStatus;
   hasImage: boolean;
   existingChangeRequest: string;
   imageError: string;

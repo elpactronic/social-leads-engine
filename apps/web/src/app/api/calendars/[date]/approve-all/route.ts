@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { listStories, updateStory } from "@warm-stories/core";
+import { listPosts, updatePost } from "@social-leads/core";
 
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ date: string }> },
 ) {
   const { date } = await params;
-  const stories = await listStories(date);
+  const stories = await listPosts(date);
 
   if (stories.length === 0) {
     return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(
   }
 
   for (const s of drafts) {
-    await updateStory({ ...s, status: "approved" });
+    await updatePost({ ...s, status: "approved" });
   }
 
   return NextResponse.json({ ok: true, approved: drafts.length });

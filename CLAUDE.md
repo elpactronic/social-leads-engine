@@ -256,9 +256,11 @@ Pendiente de implementar:
 ## Variables de entorno requeridas (.env)
 
 ```
-KIE_AI_API_KEY=sk_...       # API key de kie.ai (generación de imágenes)
-IG_ID=...                   # ID de Instagram Business Account
-IG_ACCESS_TOKEN=...         # Long-lived access token Meta
+KIE_AI_API_KEY=sk_...           # API key de kie.ai (generación de imágenes)
+IG_ID=...                       # ID de Instagram Business Account
+IG_ACCESS_TOKEN=...             # Long-lived access token Meta (Instagram)
+FB_PAGE_ID=...                  # ID de la Facebook Page
+FB_PAGE_ACCESS_TOKEN=...        # Page Access Token de Facebook
 # Opcionales (modo avanzado)
 GHL_API_KEY=...
 GHL_LOCATION_ID=...

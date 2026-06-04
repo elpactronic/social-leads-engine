@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { findStoryById, updateStory } from "@warm-stories/core";
+import { findPostById, updatePost } from "@social-leads/core";
 
 export async function POST(
   req: Request,
@@ -15,7 +15,7 @@ export async function POST(
       { status: 400 },
     );
   }
-  const story = await findStoryById(decoded);
+  const story = await findPostById(decoded);
   if (!story) {
     return NextResponse.json(
       { ok: false, error: "Story no encontrada" },
@@ -28,7 +28,7 @@ export async function POST(
       { status: 400 },
     );
   }
-  await updateStory({
+  await updatePost({
     ...story,
     status: "needs-revision",
     change_request: feedback,

@@ -1,59 +1,107 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  listStories,
-  listLeadMagnetsForCalendar,
-  loadAvatar,
-} from "@warm-stories/core";
+import { listPosts, loadRubro } from "@social-leads/core";
+import type { PostPlatform } from "@social-leads/core";
 import CalendarActions from "./CalendarActions";
-import LeadMagnetGenerate from "./LeadMagnetGenerate";
 import StoryGridItem from "./StoryGridItem";
 
 export const dynamic = "force-dynamic";
 
+const PLATFORM_ICON: Record<PostPlatform, string> = {
+  instagram: "📷",
+  facebook: "👍",
+  tiktok: "🎵",
+  multi: "🌐",
+};
+
+const PLATFORM_LABEL: Record<PostPlatform, string> = {
+  instagram: "Instagram",
+  facebook: "Facebook",
+  tiktok: "TikTok",
+  multi: "Multi",
+};
+
 export default async function CalendarPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ date: string }>;
+  searchParams: Promise<{ platform?: string }>;
 }) {
   const { date } = await params;
-  const stories = await listStories(date);
+  const { platform: platformParam } = await searchParams;
 
-  if (stories.length === 0) {
-    notFound();
-  }
+  const allPosts = await listPosts(date);
+  if (allPosts.length === 0) notFound();
 
-  const avatar = await loadAvatar();
-  const palette = avatar.brand.palette;
-  const leadMagnets = await listLeadMagnetsForCalendar(date);
+  const validPlatforms: PostPlatform[] = ["instagram", "facebook", "tiktok", "multi"];
+  const activePlatform =
+    platformParam && validPlatforms.includes(platformParam as PostPlatform)
+      ? (platformParam as PostPlatform)
+      : null;
 
-  const draftCount = stories.filter((s) => s.status === "draft").length;
-  const pendingImage = stories.filter(
+  const posts = activePlatform
+    ? allPosts.filter((p) => p.platform === activePlatform)
+    : allPosts;
+
+  // Plataformas presentes en este calendario
+  const platformsInCalendar = validPlatforms.filter((pl) =>
+    allPosts.some((p) => p.platform === pl),
+  );
+
+  const rubro = await loadRubro();
+  const palette = rubro.brand.palette;
+
+  const draftCount = posts.filter((s) => s.status === "draft").length;
+  const pendingImage = posts.filter(
     (s) => (s.status === "approved" || s.status === "failed") && !s.image_url,
   ).length;
-  const generating = stories.filter(
-    (s) => s.status === "generating-image",
-  ).length;
-  const ready = stories.filter((s) => s.status === "ready").length;
-  const published = stories.filter((s) => s.status === "published").length;
-  const failed = stories.filter((s) => s.status === "failed").length;
-  const regenerable = stories.filter(
+  const generating = posts.filter((s) => s.status === "generating-image").length;
+  const ready = posts.filter((s) => s.status === "ready").length;
+  const published = posts.filter((s) => s.status === "published").length;
+  const failed = posts.filter((s) => s.status === "failed").length;
+  const regenerable = posts.filter(
     (s) => s.status !== "published" && Boolean(s.image_url),
   ).length;
-  const downloadable = stories.filter((s) => Boolean(s.image_url)).length;
-  const needsRevision = stories.filter(
-    (s) => s.status === "needs-revision",
-  ).length;
+  const downloadable = posts.filter((s) => Boolean(s.image_url)).length;
+  const needsRevision = posts.filter((s) => s.status === "needs-revision").length;
 
   return (
     <main>
       <Link href="/" className="muted">
         ← volver
       </Link>
-      <h1>Calendario {date}</h1>
-      <p className="muted">
-        {stories.length} historias · {draftCount} draft · {ready} ready ·{" "}
-        {published} publicadas
+      <h1>
+        {activePlatform
+          ? `${PLATFORM_ICON[activePlatform]} ${PLATFORM_LABEL[activePlatform]} · ${date}`
+          : `Calendario ${date}`}
+      </h1>
+
+      {/* Tabs de plataforma */}
+      {platformsInCalendar.length > 1 && (
+        <div className="platform-tabs" style={{ marginBottom: 16 }}>
+          <Link
+            href={`/calendar/${date}` as never}
+            className={`platform-tab${!activePlatform ? " platform-tab--active" : ""}`}
+          >
+            Todos
+          </Link>
+          {platformsInCalendar.map((pl) => (
+            <Link
+              key={pl}
+              href={`/calendar/${date}?platform=${pl}` as never}
+              className={`platform-tab${activePlatform === pl ? " platform-tab--active" : ""}`}
+            >
+              <span className="platform-tab-icon">{PLATFORM_ICON[pl]}</span>
+              {PLATFORM_LABEL[pl]}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <p className="muted" style={{ marginBottom: 16 }}>
+        {posts.length} post{posts.length !== 1 ? "s" : ""} · {draftCount} draft
+        · {ready} ready · {published} publicado{published !== 1 ? "s" : ""}
       </p>
 
       <CalendarActions
@@ -66,54 +114,18 @@ export default async function CalendarPage({
         regenerable={regenerable}
         downloadable={downloadable}
         needsRevision={needsRevision}
-        failedStories={stories
+        failedStories={posts
           .filter((s) => s.status === "failed")
           .map((s) => ({
             id: s.id,
             slot: s.slot,
             model: s.image_model || "",
-            error:
-              s.image_error || "Sin detalle (regenera para capturar el error).",
+            error: s.image_error || "Sin detalle (regenera para capturar el error).",
           }))}
       />
 
-      <h2>Lead magnet</h2>
-      {leadMagnets.length === 0 ? (
-        <LeadMagnetGenerate date={date} />
-      ) : (
-        <div>
-          {leadMagnets.map((lm) => (
-            <Link
-              key={lm.id}
-              href={`/leadmagnet/${encodeURIComponent(lm.id)}` as never}
-              className="lm-card"
-              style={{ color: "inherit" }}
-            >
-              <div>
-                <strong>{lm.keyword}</strong>{" "}
-                <span className="muted"> · creado {lm.created}</span>
-                {lm.change_request && (
-                  <p className="muted" style={{ marginTop: 6 }}>
-                    Cambios pedidos: {lm.change_request.slice(0, 140)}
-                    {lm.change_request.length > 140 ? "…" : ""}
-                  </p>
-                )}
-              </div>
-              <span className={`status ${lm.status}`}>{lm.status}</span>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <h2>Preview tipográfico</h2>
-      <p className="muted">
-        Cada historia es UN slide con UNA idea, alineada a su función dentro del
-        funnel (gancho → empatía → insight → prueba → CTA). Cuando se generen
-        las imágenes, el texto queda superpuesto con contraste sobre el fondo.
-      </p>
-
       <div className="preview-grid">
-        {stories.map((s) => (
+        {posts.map((s) => (
           <StoryGridItem key={s.id} story={s} palette={palette} />
         ))}
       </div>

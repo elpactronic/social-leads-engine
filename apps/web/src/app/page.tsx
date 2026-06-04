@@ -1,15 +1,30 @@
 import Link from "next/link";
-import { listCalendars } from "@warm-stories/core";
+import { listCalendars } from "@social-leads/core";
+import type { PostPlatform } from "@social-leads/core";
 import GenerateCalendarForm from "../components/GenerateCalendarForm";
 
 export const dynamic = "force-dynamic";
+
+const PLATFORM_ICON: Record<PostPlatform, string> = {
+  instagram: "📷",
+  facebook: "👍",
+  tiktok: "🎵",
+  multi: "🌐",
+};
+
+const PLATFORM_LABEL: Record<PostPlatform, string> = {
+  instagram: "Instagram",
+  facebook: "Facebook",
+  tiktok: "TikTok",
+  multi: "Multi",
+};
 
 export default async function HomePage() {
   const calendars = await listCalendars();
 
   return (
     <main>
-      <h1>warm-stories</h1>
+      <h1>Vision House · Social Leads</h1>
       <p className="muted" style={{ marginBottom: 24 }}>
         Genera calendarios desde aquí o desde Claude Code con{" "}
         <code>/generate-calendar &lt;tema&gt;</code>.
@@ -45,30 +60,41 @@ export default async function HomePage() {
         <div>
           <h2>Calendarios</h2>
           {calendars.map((c) => (
-            <Link
-              key={c.date}
-              href={`/calendar/${c.date}` as never}
-              className="card"
-              style={{ display: "block", color: "inherit" }}
-            >
-              <div className="row">
-                <div>
-                  <strong>{c.date}</strong>{" "}
-                  <span className="muted">
-                    · {c.count} historia{c.count !== 1 ? "s" : ""}
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {Object.entries(c.byStatus)
-                    .filter(([, n]) => n > 0)
-                    .map(([s, n]) => (
-                      <span key={s} className={`status ${s}`}>
-                        {s}: {n}
-                      </span>
-                    ))}
-                </div>
+            <div key={c.date} className="card calendar-card">
+              {/* Fecha */}
+              <div className="calendar-card-date">
+                <strong>{c.date}</strong>
+                <span className="muted">
+                  {c.count} post{c.count !== 1 ? "s" : ""}
+                </span>
               </div>
-            </Link>
+
+              {/* Fila por plataforma */}
+              {c.byPlatform.map((group) => (
+                <Link
+                  key={group.platform}
+                  href={`/calendar/${c.date}?platform=${group.platform}` as never}
+                  className="calendar-platform-row"
+                >
+                  <span className="calendar-platform-name">
+                    {PLATFORM_ICON[group.platform]}{" "}
+                    {PLATFORM_LABEL[group.platform]}
+                  </span>
+                  <span className="muted calendar-platform-count">
+                    {group.count} post{group.count !== 1 ? "s" : ""}
+                  </span>
+                  <div className="calendar-platform-status">
+                    {Object.entries(group.byStatus)
+                      .filter(([, n]) => n > 0)
+                      .map(([s, n]) => (
+                        <span key={s} className={`status ${s}`}>
+                          {s}: {n}
+                        </span>
+                      ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
       )}

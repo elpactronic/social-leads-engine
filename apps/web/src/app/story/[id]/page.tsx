@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { findStoryById, loadAvatar } from "@warm-stories/core";
-import StoryPreview from "@/components/StoryPreview";
+import { findPostById, loadRubro } from "@social-leads/core";
+import PostPreview from "@/components/PostPreview";
 import StoryActions from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -13,10 +13,10 @@ export default async function StoryDetail({
 }) {
   const { id } = await params;
   const decoded = decodeURIComponent(id);
-  const story = await findStoryById(decoded);
+  const story = await findPostById(decoded);
   if (!story) notFound();
 
-  const avatar = await loadAvatar();
+  const rubro = await loadRubro();
 
   return (
     <main>
@@ -41,9 +41,9 @@ export default async function StoryDetail({
       >
         <div>
           <div className="story-preview-lg">
-            <StoryPreview
-              story={story}
-              palette={avatar.brand.palette}
+            <PostPreview
+              post={story}
+              palette={rubro.brand.palette}
               size="lg"
             />
           </div>

@@ -133,32 +133,54 @@ async function readPostFile(filePath: string): Promise<Post> {
   return { ...fm, ...sections, filePath };
 }
 
+const EMPTY_BY_STATUS = (): Record<PostStatus, number> => ({
+  draft: 0,
+  approved: 0,
+  "needs-revision": 0,
+  "generating-image": 0,
+  ready: 0,
+  published: 0,
+  failed: 0,
+});
+
 export async function listCalendars(): Promise<CalendarSummary[]> {
   if (!existsSync(CALENDARS_ROOT)) return [];
   const dates = await readdir(CALENDARS_ROOT);
   const out: CalendarSummary[] = [];
-  for (const date of dates.sort().reverse()) {
+
+  for (const date of dates.sort()) { // ascendente: más cercano arriba
     const dir = path.join(CALENDARS_ROOT, date);
     const files = await readdir(dir).catch(() => [] as string[]);
     const mdFiles = files.filter((f) => f.endsWith(".md"));
-    const byStatus: Record<PostStatus, number> = {
-      draft: 0,
-      approved: 0,
-      "needs-revision": 0,
-      "generating-image": 0,
-      ready: 0,
-      published: 0,
-      failed: 0,
-    };
+
+    const byStatus = EMPTY_BY_STATUS();
+    const platformMap = new Map<string, Record<PostStatus, number>>();
+
     for (const f of mdFiles) {
       try {
         const post = await readPostFile(path.join(dir, f));
         byStatus[post.status]++;
+        const plat = post.platform ?? "instagram";
+        if (!platformMap.has(plat)) platformMap.set(plat, EMPTY_BY_STATUS());
+        platformMap.get(plat)![post.status]++;
       } catch {
         // ignore malformed
       }
     }
-    out.push({ date, count: mdFiles.length, byStatus });
+
+    const PLATFORM_ORDER = ["instagram", "facebook", "tiktok", "multi"];
+    const byPlatform = [...platformMap.entries()]
+      .sort(
+        (a, b) =>
+          PLATFORM_ORDER.indexOf(a[0]) - PLATFORM_ORDER.indexOf(b[0]),
+      )
+      .map(([platform, ps]) => ({
+        platform: platform as import("../types/post").PostPlatform,
+        count: Object.values(ps).reduce((s, n) => s + n, 0),
+        byStatus: ps,
+      }));
+
+    out.push({ date, count: mdFiles.length, byStatus, byPlatform });
   }
   return out;
 }

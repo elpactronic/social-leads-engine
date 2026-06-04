@@ -17,8 +17,8 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "warm-stories",
-  description: "Calendario de historias de Instagram con revisión humana",
+  title: "Social Leads Engine",
+  description: "Motor de contenido y captación de leads para pequeños negocios",
 };
 
 export default function RootLayout({
