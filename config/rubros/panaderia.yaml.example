@@ -1,0 +1,63 @@
+# panaderia.yaml — Perfil para panadería / confitería / pastelería
+
+rubro:
+  type: "panaderia"
+  nombre_negocio: "Panadería El Nombre"
+  one_liner: "Pan artesanal y tortas que hacen feliz a tu mesa desde [año]"
+  productos_servicios:
+    - "Pan artesanal diario"
+    - "Tortas y postres para pedidos"
+    - "Medialunas y facturas"
+    - "Delivery en zona"
+  zona_geografica: "Barrio / Zona de reparto"
+  ciudad: "Ciudad"
+
+cliente:
+  perfil: "Familias y vecinos del barrio que quieren pan de calidad. También organizadores de eventos o fiestas que buscan tortas personalizadas."
+  dolor: "El pan del supermercado no tiene sabor y las panaderías industriales siempre iguales. Buscan algo casero y de confianza."
+  deseo: "Pan rico, fresco, que huela bien y que siempre esté. Para tortas: que quede linda, sea rica y no salga carísima."
+  objeciones:
+    - "¿Hace envíos?"
+    - "¿Puedo encargar con poca anticipación?"
+    - "¿Aceptan todos los pagos?"
+
+contacto:
+  whatsapp: "+5491100000000"
+  instagram: "@panaderia_nombre"
+  facebook: "Panadería El Nombre"
+  tiktok: "@panaderia_nombre"
+  web: ""
+  email: ""
+
+plataformas:
+  - instagram
+  - facebook
+  - tiktok
+
+modo_operacion: "simple"
+
+voice:
+  tone: "cálido, familiar, apetitoso — como el olor a pan recién hecho"
+  pronoun: "vos"
+  catchphrases:
+    - "Hecho con amor desde la madrugada"
+    - "El sabor de siempre"
+  banned_words:
+    - "artisanal"
+    - "gourmet"
+    - "premium"
+
+brand:
+  palette:
+    primary: "#8b4513"
+    background: "#fdf6e3"
+    accent: "#d4a017"
+  story_visuals:
+    background: "#fdf6e3"
+    accent: "#8b4513"
+
+calendar_defaults:
+  posts_per_day: 2
+  ratio:
+    sale_to_value: "50/50"
+  preferred_publish_window: "07:00-09:00"

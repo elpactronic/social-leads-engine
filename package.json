@@ -1,0 +1,23 @@
+{
+  "name": "social-leads-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@social-leads/web",
+    "build": "npm run build --workspace=@social-leads/web",
+    "start": "npm run start --workspace=@social-leads/web",
+    "lint": "npm run lint --workspace=@social-leads/web",
+    "test": "npm run test --workspace=@social-leads/core",
+    "test:watch": "npm run test:watch --workspace=@social-leads/core",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0"
+  }
+}

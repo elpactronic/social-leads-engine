@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "LS",
+      "Edit(packages/core/**)",
+      "Edit(apps/web/**)",
+      "Edit(content/calendars/**)",
+      "Edit(content/propiedades/**)",
+      "Edit(content/leads/**)",
+      "Edit(content/landings/**)",
+      "Edit(content/rubros/**)",
+      "Edit(config/**)",
+      "Write(packages/core/**)",
+      "Write(apps/web/**)",
+      "Write(content/calendars/**)",
+      "Write(content/propiedades/**)",
+      "Write(content/leads/**)",
+      "Write(content/landings/**)",
+      "Write(content/rubros/**)",
+      "Write(config/**)",
+      "Bash(npm install)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npm test *)",
+      "Bash(npx *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(find *)",
+      "Bash(echo *)",
+      "AskUserQuestion",
+      "WebSearch",
+      "WebFetch"
+    ],
+    "deny": [
+      "Read(**/.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/.ssh/**)",
+      "Read(**/.aws/**)",
+      "Read(**/.npmrc)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Write(**/.env*)",
+      "Write(**/.next/**)",
+      "Write(**/node_modules/**)",
+      "Write(content/published/**)",
+      "Edit(content/published/**)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(curl * | sh)",
+      "Bash(curl * | bash)",
+      "Bash(wget *)",
+      "Bash(git push *)"
+    ],
+    "defaultMode": "default"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path | select(. != null) | select(test(\"\\\\.(ts|tsx|js|jsx|json|md|css)$\"))' | xargs -r npx prettier --write 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  },
+  "language": "spanish",
+  "includeGitInstructions": false
+}

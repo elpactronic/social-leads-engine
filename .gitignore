@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Environment (credenciales reales)
+.env
+.env.*
+!.env.example
+
+# Config del rubro (puede tener datos de clientes)
+config/rubro.yaml
+
+# Contenido generado con datos de clientes
+content/leads/
+content/published/
+
+# Content opcional (pueden contener datos sensibles)
+# Descomentar si no se quiere versionar el contenido generado:
+# content/calendars/
+# content/propiedades/
+# content/landings/
+
+# Claude Code local
+.claude/settings.local.json
+.claude/agent-memory-local/
+
+# AI tools
+.cursor/
+
+# Secrets
+*.pem
+*.key
+secrets/
+.aws/
+.ssh/
+.npmrc
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and coverage
+*.log
+coverage/
+.nyc_output/
+
+# Next.js
+next-env.d.ts
+.vercel

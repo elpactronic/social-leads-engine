@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{TITLE}} — {{BRAND_NAME}}</title>
+{{GOOGLE_FONTS_TAG}}
+<style>
+  :root {
+    --bg: {{PALETTE_BG}};
+    --fg: {{PALETTE_FG}};
+    --accent: {{PALETTE_ACCENT}};
+    --muted: {{PALETTE_MUTED}};
+    --heading-font: {{HEADING_FONT}}, "Helvetica Neue", Arial, sans-serif;
+    --body-font: {{BODY_FONT}}, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body-font);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  article {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 36px 80px;
+  }
+  header.brand {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--accent);
+  }
+  header.brand .name {
+    font-family: var(--heading-font);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  header.brand .handle {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: var(--body-font);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--heading-font);
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+  h1 {
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 0 0 24px;
+  }
+  h2 {
+    font-size: 24px;
+    margin: 36px 0 12px;
+    color: var(--accent);
+  }
+  h3 { font-size: 19px; margin: 24px 0 10px; }
+  p { margin: 0 0 16px; }
+  a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  ul, ol { padding-left: 22px; margin: 0 0 16px; }
+  ul li, ol li { margin-bottom: 8px; }
+  strong { color: var(--fg); font-weight: 700; }
+  em { color: var(--fg); }
+  hr {
+    border: none;
+    border-top: 1px solid var(--muted);
+    margin: 32px 0;
+    opacity: 0.4;
+  }
+  code {
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    background: var(--muted);
+    color: var(--fg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+    opacity: 0.95;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 15px;
+  }
+  th, td {
+    border: 1px solid var(--muted);
+    padding: 10px 14px;
+    text-align: left;
+  }
+  th {
+    background: var(--muted);
+    font-weight: 700;
+  }
+  .offer {
+    margin-top: 48px;
+    padding: 24px 28px;
+    border-radius: 12px;
+    border: 1px solid var(--accent);
+    background: rgba(0,0,0,0.02);
+  }
+  .offer .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 6px;
+  }
+  .offer .name {
+    font-family: var(--heading-font);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--fg);
+  }
+  .offer .cta {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 10px 18px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  footer.meta {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--muted);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  @media print {
+    body { background: white; color: black; font-size: 12.5px; }
+    article { padding: 24px 0; max-width: none; }
+    header.brand { page-break-after: avoid; }
+    h1, h2, h3 { page-break-after: avoid; }
+    .offer { page-break-inside: avoid; }
+    .offer .cta { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  }
+</style>
+</head>
+<body>
+<article>
+
+<header class="brand">
+  <div class="name">{{BRAND_NAME}}</div>
+  <div class="handle">{{INSTAGRAM_HANDLE}}</div>
+</header>
+
+{{BODY}}
+
+<section class="offer">
+  <p class="label">Si quieres dar el siguiente paso</p>
+  <p class="name">{{OFFER_NAME}}</p>
+  {{OFFER_LINK_BLOCK}}
+</section>
+
+<footer class="meta">
+  <span>{{BRAND_NAME}} · {{CREATED}}</span>
+  <span>{{INSTAGRAM_HANDLE}}</span>
+</footer>
+
+</article>
+</body>
+</html>

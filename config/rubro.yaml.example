@@ -1,0 +1,63 @@
+# rubro.yaml — Perfil del negocio para Social Leads Engine
+# Copiar a rubro.yaml y completar con datos reales.
+# Este archivo NO se commitea si contiene datos personales/sensibles.
+
+rubro:
+  type: "generico"         # Ver tipos válidos en CLAUDE.md
+  nombre_negocio: "Mi Negocio"
+  one_liner: "Una línea que describa qué hacés y para quién"
+  productos_servicios:
+    - "Producto o servicio principal"
+    - "Producto o servicio secundario"
+  zona_geografica: "Barrio o zona de cobertura"
+  ciudad: "Ciudad"
+
+cliente:
+  perfil: "Descripción del cliente ideal (edad, situación, motivación)"
+  dolor: "Qué problema tiene que vos resolvés"
+  deseo: "Qué quiere lograr con tu producto/servicio"
+  objeciones:
+    - "Primera objeción común"
+    - "Segunda objeción común"
+
+contacto:
+  whatsapp: "+5491100000000"   # Número completo con código de país
+  instagram: "@mi_negocio"
+  facebook: "Mi Negocio"
+  tiktok: "@mi_negocio"
+  web: ""
+  email: ""
+
+plataformas:
+  - instagram
+  - facebook
+  # - tiktok
+
+modo_operacion: "simple"   # simple | intermedio | avanzado
+
+voice:
+  tone: "cercano y claro"
+  pronoun: "vos"
+  catchphrases:
+    - "Frase característica de tu negocio"
+  banned_words:
+    - "barato"
+    - "garantizado"
+
+brand:
+  palette:
+    primary: "#000000"
+    background: "#ffffff"
+    accent: "#0077b6"
+  typography:
+    heading: "Montserrat"
+    body: "Open Sans"
+  story_visuals:
+    background: "#ffffff"
+    accent: "#0077b6"
+
+calendar_defaults:
+  posts_per_day: 3
+  ratio:
+    sale_to_value: "40/60"    # 40% venta, 60% valor/confianza
+  preferred_publish_window: "09:00-12:00"
